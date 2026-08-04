@@ -17,6 +17,7 @@
     "strict": true,
     "esModuleInterop": true,
     "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
     "types": ["node", "vite/client"],
     "paths": {
       "@/*": ["./src/*"]
