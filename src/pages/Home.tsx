@@ -3,7 +3,16 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Github, Linkedin, Mail, Phone, ExternalLink, Loader2, CheckCircle, AlertCircle } from "lucide-react";
+import {
+  Github,
+  Linkedin,
+  Mail,
+  Phone,
+  ExternalLink,
+  Loader2,
+  CheckCircle,
+  AlertCircle,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import emailjs from "@emailjs/browser";
@@ -18,6 +27,8 @@ const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
  * Typography: Sora (display) + Inter (body) + Fira Code (technical)
  */
 
+type ProjectStatus = "live" | "suspended" | "coming-soon" | "desktop-only";
+
 interface Project {
   id: number;
   title: string;
@@ -26,6 +37,7 @@ interface Project {
   link: string;
   github: string;
   image: string;
+  status: ProjectStatus;
 }
 
 interface Skill {
@@ -37,78 +49,90 @@ const projects: Project[] = [
   {
     id: 1,
     title: "Membership Monarch",
-    description: "A Flask membership platform with role-based access control and automated onboarding/notification emails via Flask-Mail.",
+    description:
+      "A Flask membership platform with role-based access control and automated onboarding/notification emails via Flask-Mail.",
     tech: ["Python", "Flask", "Flask-Mail", "SQL"],
     link: "https://membershipmonarch.com",
     github: "https://github.com/Smartex-Dan/membership-monarch001",
     image: "/projects/membership-monarch.png",
+    status: "live",
   },
   {
     id: 2,
     title: "Habit Tracker",
-    description: "A near-production habit-tracking SaaS with streak calculation and a 0–100 Consistency Score computed server-side and rendered as an animated SVG ring on the frontend.",
+    description:
+      "A near-production habit-tracking SaaS with streak calculation and a 0–100 Consistency Score computed server-side and rendered as an animated SVG ring on the frontend.",
     tech: ["Django REST", "React", "TypeScript", "Supabase", "Tailwind"],
     link: "https://habit-tracker-gold-pi-43.vercel.app",
     github: "https://github.com/Smartex-Dan/habit-tracker",
     image: "/projects/habit-tracker.png",
+    status: "live",
   },
   {
     id: 3,
     title: "Football Pulse",
-    description: "A SofaScore-style live football stats app — live scores, standings, match timelines, and AI-powered match analysis, with a Django + Celery backend polling API-Football and pushing updates over WebSockets.",
+    description:
+      "A SofaScore-style live football stats app — live scores, standings, match timelines, and AI-powered match analysis, with a Django + Celery backend polling API-Football and pushing updates over WebSockets.",
     tech: ["Django", "React", "TypeScript", "Supabase", "WebSockets"],
-    // TODO: not deployed yet (blocked on Railway hosting) — add the live URL once it's up
-    link: "Not deployed yet",
+    link: "",
     github: "https://github.com/Smartex-Dan/football-pulse",
-    image: "/projects/football-pulse.png",
+    image: "/projects/football.png",
+    status: "coming-soon",
   },
   {
     id: 4,
     title: "Snip — URL Shortener",
-    description: "A fully functional URL shortener with custom slug support and click tracking. Built with Flask and SQLite, deployed on Railway with zero-downtime updates.",
+    description:
+      "A fully functional URL shortener with custom slug support and click tracking. Built with Flask and SQLite, deployed on Railway with zero-downtime updates.",
     tech: ["Python", "Flask", "SQLite", "Railway"],
     link: "https://snip-link-shortener-production.up.railway.app/",
     github: "https://github.com/Smartex-Dan/snip-link-shortener",
     image: "/projects/snip.png",
+    status: "suspended",
   },
   {
     id: 5,
     title: "CryptoVerse",
-    description: "A live cryptocurrency dashboard tracking prices, market caps, and crypto news, with interactive charts for coin history.",
+    description:
+      "A live cryptocurrency dashboard tracking prices, market caps, and crypto news, with interactive charts for coin history.",
     tech: ["React", "Redux Toolkit", "Ant Design", "Chart.js", "RapidAPI"],
-    // TODO: paste the live URL here
-    link: "",
+    link: "https://cryptoverse-mocha.vercel.app",
     github: "https://github.com/Smartex-Dan/cryptoverse",
-    image: "/projects/crypto-verse.png",
+    image: "/projects/crypto.png",
+    status: "live",
   },
   {
     id: 6,
-    title: "Lily — E-Commerce",
-    description: "A complete Nigerian jewelry and accessories shop with 36+ products, Naira pricing, and WhatsApp integration. Features live search, category filters, and a flash sale banner.",
-    tech: ["HTML", "CSS", "JavaScript", "E-Commerce"],
-    // TODO: add the live URL once it's deployed
-    link: "",
-    github: "https://github.com/Smartex-Dan/lily",
-    image: "/projects/lily.png",
+    title: "Simple QR Creator",
+    description:
+      "A lightweight QR code generator — type any text or URL, customize the color and size, and download the result as a PNG. No build step, no server.",
+    tech: ["HTML", "CSS", "JavaScript"],
+    link: "https://simple-qr-code-generator.netlify.app/",
+    github: "https://github.com/Smartex-Dan/simple-qr-creator",
+    image: "/projects/qr-creator.png",
+    status: "live",
   },
   {
     id: 7,
     title: "Weather App",
-    description: "A real-time weather app with an editorial dark UI, warm ambient tones, and Lagos as the default city.",
+    description:
+      "A real-time weather app with an editorial dark UI, warm ambient tones, and Lagos as the default city.",
     tech: ["Django", "Open-Meteo API", "JavaScript"],
     link: "https://weather-app-python-version.onrender.com",
     github: "https://github.com/Smartex-Dan/weather-app-python-version",
     image: "/projects/weather.png",
+    status: "live",
   },
   {
     id: 8,
     title: "Clock Widget",
-    description: "A minimalist digital clock built with Tkinker, designed as a lightweight, embeddable widget.",
-    tech: ["Tkinker"],
-    // No live URL for this one — GitHub only
+    description:
+      "A custom-shaped, always-on-top desktop clock for Windows — chroma-key transparent window with a faceted octagonal bezel, live seconds progress bar, and click-drag repositioning.",
+    tech: ["Python", "Tkinter", "ctypes"],
     link: "",
     github: "https://github.com/Smartex-Dan/clock-widget",
     image: "/projects/clock.jfif",
+    status: "desktop-only",
   },
 ];
 
@@ -119,7 +143,17 @@ const skills: Skill[] = [
   },
   {
     category: "Frameworks & Libraries",
-    items: ["Flask", "Django", "Django REST Framework", "React", "Celery", "WebSockets", "Tkinter", "Bootstrap", "GSAP"],
+    items: [
+      "Flask",
+      "Django",
+      "Django REST Framework",
+      "React",
+      "Celery",
+      "WebSockets",
+      "Tkinter",
+      "Bootstrap",
+      "GSAP",
+    ],
   },
   {
     category: "Databases",
@@ -127,13 +161,61 @@ const skills: Skill[] = [
   },
   {
     category: "Tools & Platforms",
-    items: ["Git", "GitHub", "VS Code", "Railway", "Vercel", "Netlify", "Docker", "Render"],
+    items: [
+      "Git",
+      "GitHub",
+      "VS Code",
+      "Railway",
+      "Vercel",
+      "Netlify",
+      "Docker",
+      "Render",
+    ],
   },
   {
     category: "Design",
     items: ["Figma", "Adobe Illustrator", "Canva", "CorelDraw", "UI/UX"],
   },
 ];
+
+function ProjectLinkArea({ project }: { project: Project }) {
+  if (project.status === "suspended") {
+    return (
+      <span className="inline-flex items-center px-3 py-1.5 text-xs font-mono rounded border border-yellow-500/40 text-yellow-500 bg-yellow-500/10">
+        Suspended — free tier expired
+      </span>
+    );
+  }
+  if (project.status === "coming-soon") {
+    return (
+      <span className="inline-flex items-center px-3 py-1.5 text-xs font-mono rounded border border-muted-foreground/30 text-muted-foreground">
+        Not live yet
+      </span>
+    );
+  }
+  if (project.status === "desktop-only") {
+    return (
+      <span className="inline-flex items-center px-3 py-1.5 text-xs font-mono rounded border border-muted-foreground/30 text-muted-foreground">
+        Desktop app — no live demo
+      </span>
+    );
+  }
+  if (project.link) {
+    return (
+      <a href={project.link} target="_blank" rel="noopener noreferrer">
+        <Button
+          variant="outline"
+          size="sm"
+          className="border-accent text-accent hover:bg-accent/10 glow-accent"
+        >
+          <ExternalLink className="w-4 h-4 mr-2" />
+          Live Demo
+        </Button>
+      </a>
+    );
+  }
+  return null;
+}
 
 export default function Home() {
   const [scrollY, setScrollY] = useState(0);
@@ -143,7 +225,9 @@ export default function Home() {
     subject: "",
     message: "",
   });
-  const [formStatus, setFormStatus] = useState<"idle" | "success" | "error">("idle");
+  const [formStatus, setFormStatus] = useState<"idle" | "success" | "error">(
+    "idle"
+  );
   const [isSending, setIsSending] = useState(false);
 
   useEffect(() => {
@@ -156,7 +240,7 @@ export default function Home() {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleFormSubmit = async (e: React.FormEvent) => {
@@ -167,7 +251,10 @@ export default function Home() {
       toast.error("Please enter your name");
       return;
     }
-    if (!formData.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+    if (
+      !formData.email.trim() ||
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
+    ) {
       toast.error("Please enter a valid email address");
       return;
     }
@@ -220,13 +307,20 @@ export default function Home() {
             <span className="font-bold text-lg">Daniel Adeoye</span>
           </div>
           <div className="flex items-center gap-6">
-            <a href="#projects" className="link-underline text-sm hover:text-accent">
+            
+            <a href="#hero" className="link-underline text-sm hover:text-accent" >
+              Home
+            </a>
+            
+            <a href="#projects" className="link-underline text-sm hover:text-accent" >
               Projects
             </a>
-            <a href="#skills" className="link-underline text-sm hover:text-accent">
+            
+            <a href="#skills" className="link-underline text-sm hover:text-accent" >
               Skills
             </a>
-            <a href="#contact" className="link-underline text-sm hover:text-accent">
+            
+            <a href="#contact" className="link-underline text-sm hover:text-accent" >
               Contact
             </a>
           </div>
@@ -234,11 +328,11 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative pt-32 pb-20 overflow-hidden">
+      <section id="hero" className="relative pt-32 pb-20 overflow-hidden">
         <div
           className="absolute inset-0 opacity-40"
           style={{
-            backgroundImage: `url('https://d2xsxph8kpxj0f.cloudfront.net/310519663657137097/J2cRfKNrEczxAP9mvPRzDf/hero-background-oRxBKa2rnk52eGhoVvDsQJ.webp')`,
+            backgroundImage: `url('https://i.pinimg.com/736x/f5/e8/72/f5e87230f73c9811d9f9a69feb392b5a.jpg')`,
             backgroundSize: "cover",
             backgroundPosition: "center",
             transform: `translateY(${scrollY * 0.5}px)`,
@@ -255,11 +349,14 @@ export default function Home() {
                   Full-Stack Developer
                 </p>
                 <h1 className="text-5xl lg:text-6xl font-bold leading-tight">
-                  Building Elegant <span className="text-accent">Solutions</span>
+                  Building Elegant{" "}
+                  <span className="text-accent">Solutions</span>
                 </h1>
               </div>
               <p className="text-lg text-muted-foreground leading-relaxed max-w-lg">
-                I craft scalable web applications with clean code and beautiful interfaces. Specializing in Python, JavaScript, and modern frontend technologies.
+                I craft scalable web applications with clean code and beautiful
+                interfaces. Specializing in Python, JavaScript, and modern
+                frontend technologies.
               </p>
               <div className="flex gap-4 pt-4">
                 <a href="#projects">
@@ -268,7 +365,10 @@ export default function Home() {
                   </Button>
                 </a>
                 <a href="#contact">
-                  <Button variant="outline" className="border-accent text-accent hover:bg-accent/10">
+                  <Button
+                    variant="outline"
+                    className="border-accent text-accent hover:bg-accent/10"
+                  >
                     Get In Touch
                   </Button>
                 </a>
@@ -278,7 +378,7 @@ export default function Home() {
             {/* Right: Visual */}
             <div className="hidden lg:block relative h-96">
               <img
-                src="https://d2xsxph8kpxj0f.cloudfront.net/310519663657137097/J2cRfKNrEczxAP9mvPRzDf/projects-showcase-euZwwwmCCs838ykEYf4aRA.webp"
+                src="https://i.pinimg.com/736x/27/69/ae/2769aec3b16c4ec1e0e0da20f2771cee.jpg"
                 alt="Projects showcase"
                 className="w-full h-full object-cover rounded-lg"
               />
@@ -327,7 +427,7 @@ export default function Home() {
 
                   {/* Tech Stack */}
                   <div className="flex flex-wrap gap-2 mb-6">
-                    {project.tech.map((tech) => (
+                    {project.tech.map(tech => (
                       <span
                         key={tech}
                         className="px-3 py-1 bg-card text-accent text-xs font-mono rounded border border-accent/30"
@@ -338,27 +438,17 @@ export default function Home() {
                   </div>
 
                   {/* Links */}
-                  <div className="flex gap-3">
-                    {project.link && (
-                      <a href={project.link} target="_blank" rel="noopener noreferrer">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="border-accent text-accent hover:bg-accent/10 glow-accent"
-                        >
-                          <ExternalLink className="w-4 h-4 mr-2" />
-                          Live Demo
-                        </Button>
-                      </a>
-                    )}
-                    <a href={project.github} target="_blank" rel="noopener noreferrer">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <ProjectLinkArea project={project} />
+                    
+                    <a href={project.github} target="_blank" rel="noopener noreferrer" >
                       <Button
                         variant="outline"
                         size="sm"
                         className="border-accent text-accent hover:bg-accent/10"
-                      >
+                      >                
                         <Github className="w-4 h-4 mr-2" />
-                        Code
+                          Code
                       </Button>
                     </a>
                   </div>
@@ -386,7 +476,7 @@ export default function Home() {
             }}
           >
             <div className="absolute inset-0 bg-background/80 rounded-lg" />
-            {skills.map((skillGroup) => (
+            {skills.map(skillGroup => (
               <Card
                 key={skillGroup.category}
                 className="relative z-10 bg-card/50 border-accent/30 backdrop-blur-sm"
@@ -396,7 +486,7 @@ export default function Home() {
                     {skillGroup.category}
                   </h3>
                   <ul className="space-y-2">
-                    {skillGroup.items.map((item) => (
+                    {skillGroup.items.map(item => (
                       <li key={item} className="text-sm text-muted-foreground">
                         • {item}
                       </li>
@@ -417,9 +507,12 @@ export default function Home() {
               <p className="text-accent text-sm font-semibold tracking-widest uppercase mb-4">
                 Get In Touch
               </p>
-              <h2 className="text-4xl font-bold mb-6">Let's Build Something Great</h2>
+              <h2 className="text-4xl font-bold mb-6">
+                Let's Build Something Great
+              </h2>
               <p className="text-lg text-muted-foreground">
-                Have a project in mind or want to collaborate? Send me a message and I'll get back to you as soon as possible.
+                Have a project in mind or want to collaborate? Send me a message
+                and I'll get back to you as soon as possible.
               </p>
             </div>
 
@@ -427,8 +520,11 @@ export default function Home() {
               {/* Contact Info Cards */}
               <Card className="bg-card border-accent/30 p-6">
                 <Mail className="w-8 h-8 text-accent mx-auto mb-4" />
-                <p className="text-sm text-muted-foreground mb-2 text-center">Email</p>
-                
+                <p className="text-sm text-muted-foreground mb-2 text-center">
+                  Email
+                </p>
+
+                <a
                   href="mailto:adeoyedan100@gmail.com"
                   className="text-accent font-semibold hover:underline text-center block"
                 >
@@ -438,16 +534,25 @@ export default function Home() {
 
               <Card className="bg-card border-accent/30 p-6">
                 <Phone className="w-8 h-8 text-accent mx-auto mb-4" />
-                <p className="text-sm text-muted-foreground mb-2 text-center">Phone</p>
-                <a href="tel:+2347061247283" className="text-accent font-semibold hover:underline text-center block">
+                <p className="text-sm text-muted-foreground mb-2 text-center">
+                  Phone
+                </p>
+                
+                <a
+                  href="tel:+2347061247283"
+                  className="text-accent font-semibold hover:underline text-center block"
+                >
                   +234 706 1247 283
                 </a>
               </Card>
 
               <Card className="bg-card border-accent/30 p-6">
                 <Github className="w-8 h-8 text-accent mx-auto mb-4" />
-                <p className="text-sm text-muted-foreground mb-2 text-center">GitHub</p>
-                
+                <p className="text-sm text-muted-foreground mb-2 text-center">
+                  GitHub
+                </p>
+
+                <a
                   href="https://github.com/Smartex-Dan"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -528,14 +633,18 @@ export default function Home() {
                 {formStatus === "success" && (
                   <div className="flex items-center gap-2 p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
                     <CheckCircle className="w-5 h-5 text-green-500" />
-                    <p className="text-green-500 text-sm">Message sent successfully!</p>
+                    <p className="text-green-500 text-sm">
+                      Message sent successfully!
+                    </p>
                   </div>
                 )}
 
                 {formStatus === "error" && (
                   <div className="flex items-center gap-2 p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
                     <AlertCircle className="w-5 h-5 text-red-500" />
-                    <p className="text-red-500 text-sm">Failed to send message. Please try again.</p>
+                    <p className="text-red-500 text-sm">
+                      Failed to send message. Please try again.
+                    </p>
                   </div>
                 )}
 
@@ -559,6 +668,7 @@ export default function Home() {
             {/* Social Links */}
             <div className="flex justify-center gap-6 mt-12">
               
+              <a
                 href="https://github.com/Smartex-Dan"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -566,7 +676,9 @@ export default function Home() {
               >
                 <Github className="w-6 h-6" />
               </a>
+
               
+              <a
                 href="https://www.linkedin.com/in/daniel-adeoye-b48b59401/"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -574,8 +686,9 @@ export default function Home() {
               >
                 <Linkedin className="w-6 h-6" />
               </a>
-              
-                href="mailto:adoyedan100@gmail.com"
+
+              <a
+                href="mailto:adeoyedan100@gmail.com"
                 className="text-muted-foreground hover:text-accent transition-colors"
               >
                 <Mail className="w-6 h-6" />
