@@ -109,7 +109,7 @@ const projects: Project[] = [
     tech: ["HTML", "CSS", "JavaScript"],
     link: "https://simple-qr-code-generator.netlify.app/",
     github: "https://github.com/Smartex-Dan/simple-qr-creator",
-    image: "/projects/qr-creator.png",
+    image: "/projects/qr.png",
     status: "live",
   },
   {
