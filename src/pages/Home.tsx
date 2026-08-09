@@ -12,8 +12,11 @@ import {
   Loader2,
   CheckCircle,
   AlertCircle,
+  Menu,
+  X,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import type { ChangeEvent, FormEvent } from "react";
 import { toast } from "sonner";
 import emailjs from "@emailjs/browser";
 
@@ -219,6 +222,7 @@ function ProjectLinkArea({ project }: { project: Project }) {
 
 export default function Home() {
   const [scrollY, setScrollY] = useState(0);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -237,13 +241,13 @@ export default function Home() {
   }, []);
 
   const handleFormChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleFormSubmit = async (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     // Validation
@@ -267,18 +271,25 @@ export default function Home() {
       return;
     }
 
+    if (!EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID || !EMAILJS_PUBLIC_KEY) {
+      console.error("EmailJS environment variables are missing.");
+      setFormStatus("error");
+      toast.error("Contact form is not configured correctly. Please try again later.");
+      return;
+    }
+
     setIsSending(true);
     try {
       await emailjs.send(
         EMAILJS_SERVICE_ID,
         EMAILJS_TEMPLATE_ID,
         {
-          from_name: formData.name,
-          from_email: formData.email,
-          subject: formData.subject,
-          message: formData.message,
+          from_name: formData.name.trim(),
+          from_email: formData.email.trim(),
+          subject: formData.subject.trim(),
+          message: formData.message.trim(),
         },
-        { publicKey: EMAILJS_PUBLIC_KEY }
+        EMAILJS_PUBLIC_KEY
       );
       setFormStatus("success");
       setFormData({ name: "", email: "", subject: "", message: "" });
@@ -295,7 +306,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Navigation */}
+     {/* Navigation */}
       <nav className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-border">
         <div className="container flex items-center justify-between py-4">
           <div className="flex items-center gap-2">
@@ -306,25 +317,94 @@ export default function Home() {
             />
             <span className="font-bold text-lg">Daniel Adeoye</span>
           </div>
-          <div className="flex items-center gap-6">
+
+          {/* Desktop links */}
+          <div className="hidden md:flex items-center gap-6">
             
-            <a href="#hero" className="link-underline text-sm hover:text-accent" >
+            <a
+              href="#hero"
+              className="link-underline text-sm hover:text-accent"
+            >
               Home
             </a>
             
-            <a href="#projects" className="link-underline text-sm hover:text-accent" >
+            <a
+              href="#projects"
+              className="link-underline text-sm hover:text-accent"
+            >
               Projects
             </a>
             
-            <a href="#skills" className="link-underline text-sm hover:text-accent" >
+            <a
+              href="#skills"
+              className="link-underline text-sm hover:text-accent"
+            >
               Skills
             </a>
             
-            <a href="#contact" className="link-underline text-sm hover:text-accent" >
+            <a
+              href="#contact"
+              className="link-underline text-sm hover:text-accent"
+            >
               Contact
             </a>
           </div>
+
+          {/* Mobile hamburger toggle */}
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen((open) => !open)}
+            className="md:hidden p-2 text-foreground"
+            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={mobileMenuOpen}
+          >
+            {mobileMenuOpen ? (
+              <X className="w-6 h-6" />
+            ) : (
+              <Menu className="w-6 h-6" />
+            )}
+          </button>
         </div>
+
+        {/* Mobile dropdown panel */}
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t border-border bg-background/95 backdrop-blur-md">
+            <div className="container flex flex-col py-4 gap-4">
+              
+              <a
+                href="#hero"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-sm hover:text-accent"
+              >
+                Home
+              </a>
+              
+              <a
+                href="#projects"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-sm hover:text-accent"
+              >
+                Projects
+              </a>
+              
+              <a
+                href="#skills"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-sm hover:text-accent"
+              >
+                Skills
+              </a>
+              
+              <a
+                href="#contact"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-sm hover:text-accent"
+              >
+                Contact
+              </a>
+            </div>
+          </div>
+        )}
       </nav>
 
       {/* Hero Section */}
