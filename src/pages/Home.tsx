@@ -327,6 +327,13 @@ export default function Home() {
             >
               Home
             </a>
+
+            <a
+              href="#about"
+              className="link-underline text-sm hover:text-accent"
+            >
+              About
+            </a>
             
             <a
               href="#projects"
@@ -379,6 +386,14 @@ export default function Home() {
                 Home
               </a>
               
+              <a
+                href="#about"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-sm hover:text-accent"
+                >
+                  About
+              </a>
+
               <a
                 href="#projects"
                 onClick={() => setMobileMenuOpen(false)}
@@ -463,6 +478,46 @@ export default function Home() {
                 className="w-full h-full object-cover rounded-lg"
               />
               <div className="absolute inset-0 rounded-lg bg-gradient-to-tr from-accent/20 to-transparent" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* About Section */}
+      <section id="about" className="py-20 border-t border-border">
+        <div className="container">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
+            <div className="lg:col-span-1">
+              <p className="text-accent text-sm font-semibold tracking-widest uppercase mb-2">
+                About Me
+              </p>
+              <h2 className="text-4xl font-bold">Who I Am</h2>
+            </div>
+            <div className="lg:col-span-2 space-y-4">
+              <p className="text-lg text-muted-foreground leading-relaxed">
+                I'm a self-taught full-stack developer based in Lagos,
+                Nigeria. Before I ever touched a line of code, I was working
+                as a graphic designer — years of that background still shape
+                how I think about layout, hierarchy, and user experience
+                today.
+              </p>
+              <p className="text-lg text-muted-foreground leading-relaxed">
+                My primary stack is Python (Flask and Django) on the backend,
+                paired with React and TypeScript on the frontend. I freelance
+                full-time, and I'm currently building out this portfolio to
+                push toward remote and international opportunities.
+              </p>
+              <div className="flex flex-wrap gap-2 pt-2">
+                <span className="px-3 py-1 bg-card text-accent text-xs font-mono rounded border border-accent/30">
+                  Lagos, Nigeria
+                </span>
+                <span className="px-3 py-1 bg-card text-accent text-xs font-mono rounded border border-accent/30">
+                  Full-Stack Developer
+                </span>
+                <span className="px-3 py-1 bg-card text-accent text-xs font-mono rounded border border-accent/30">
+                  Ex-Graphic Designer
+                </span>
+              </div>
             </div>
           </div>
         </div>
